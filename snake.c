@@ -1,7 +1,7 @@
-/* Tema 2 
- * Programarea calculatoarelor
+/* 2nd Homework 
+ * Computer programming
  * Achiritoaei Alexandru-Adrian
- * Grupa 315CC
+ * 315CC
  */
 
 #include "snake.h"
@@ -14,41 +14,38 @@
 	int nrows, ncols;
 	char c, dir;
 
-	/* Setam dimensiunea ferestrei de joc */
+	/* Set window size */
 	system("resize -s 24 80");
 
-	/* Variabile pentru functia select */
+	/* Select variables */
 	int nfds, sel, k;
 	fd_set read_descriptors;
 	struct timeval timeout;
 
-	/* Se inițializează ecranul; initscr se va folosi în mod obligatoriu; se definesc variabilele WINDOW necesare */
+	/* Initialize screen */
 	WINDOW *score_win, *highscore_win, *pause, *win = initscr();
 	
-	/* getmaxyx - este un macro, nu o funcție, așă că nu avem adresă la parametri */
-	/* Se va reține în nrows și ncols numărul maxim de linii și coloane */
+	/* Retain max number of rows and columns */
 	getmaxyx(win, nrows, ncols);
 
-	/* Se șterge ecranul */
+	/* Clear screen */
 	clear();
-	/* Se inhibă afișarea caracterelor introduse de la tastatură */
+	/* Pressed characters won't be seen on the screen */
 	noecho();
-	/* Caracterele introduse sunt citite imediat - fără 'buffering' */
+	/* Typed characters are immediatly read, without buffering */
 	cbreak();
-	/* Se ascunde cursorul */	
+	/* Hide cursor */	
 	curs_set(0);
-
-	/* Se seteaza culorile */
+	/* Set color pair */
 	start_color();
 	init_pair(1, COLOR_GREEN, COLOR_BLACK);
 	wattron(win, COLOR_PAIR(1));
 
-	/* Se afiseaza meniul intial */
-
+	/* Display initial menu */
 	MENU:initial_menu(win);
 	
-	/* Se alege o optiune din meniu 
-	 * Folosind 'goto' exista posibilitatea de intoarcere la meniul initial, din meniurile selectate ulterior
+	/** 
+	 * Choose an option from the menu
 	 */
 	int obstacole = 0;
 	char optiune;
@@ -82,19 +79,17 @@
 		}
 	wclear(win);
 
-	/* Fereastra jocului*/
-
-	//Se afiseaza logo-ul 'snake'
+	/* Game window */
 	display_snake(win);
-	//Definire dimensiuni fereastra joc;
+	//window dimensions;
 	struct gameBorder box; 
 	box.initrow = BOX_ROW;
 	box.initcol = BOX_COL;
 	box.height = BOX_HEIGHT;
 	box.width = BOX_WIDTH;
-	//Se deseneaza chenarul in care se va misca sarpele
+	//draw border
 	win = newwin(box.height, box.width, box.initrow, box.initcol);
-	//Se coloreaza verde, se seteaza atributul BOLD
+	//color green
 	start_color();
 	init_pair(1, COLOR_GREEN, COLOR_BLACK);
 	wattron(win, COLOR_PAIR(1));
@@ -103,74 +98,67 @@
 	//wborder(win, ACS_VLINE, ACS_VLINE, '_', ACS_S1,'_','_',ACS_S1,ACS_S1);
 	box(win, 0, 0);
 		
-	/* Submeniu in fereastra jocului care afiseaza scorul curent */
+	/* Current score submenu */
 	float scor = 5 * M_PI * 10;
 	display_current_score_submenu(score_win, scor);
 
-	/* Submeniu in fereastra jocului care afiseaza highscore */
+	/* Current highscore submenu */
 	display_highscore_submenu(highscore_win);
 		
-	//Reflectare schimbari
+	//refresh
 	refresh();
 	wrefresh(win);
 	
-	/* Se initializeaza sarpele */
+	/* Initialize snake */
 	struct coordinates snake[box.height * box.width];
 	int length = 5;
 	snake_init(snake, length, row, col);
 	
-	/* Se initializeaza obstacolele, daca este cazul */
-	//Se vor colora albastru
+	/* Initialize obstacles */
+	//color blue
 	init_pair(2, COLOR_BLUE, COLOR_BLACK);
 	attron(COLOR_PAIR(2));
-
 	srand(time(NULL));
 	int numberOfObstacles = 50;
 	struct coordinates obstacles[numberOfObstacles];
 	if(obstacole == 1)
 		obstacle_init(numberOfObstacles, obstacles, box, snake, length);
 	attroff(COLOR_PAIR(2));
-	//Se revine la culoarea initiala
+	//back to initial color
 	attron(COLOR_PAIR(1));
 
-	/* Se initializeaza hrana 
-	 * Se vor genera coordinates random pentru hrana pana se va gasi o pozitie valida
-	 * Pozitie valida inseamna ca aceasta sa nu se afle peste sarpe sau peste obstacole
-	 */
+	/* Initialize food */
 	int randomrow, randomcol;
 	do{
 		grow_food(snake, box, &randomrow, &randomcol);
 	} while (check_on_snake(snake, length, randomrow, randomcol) == 1 || check_on_snake(obstacles, numberOfObstacles, randomrow, randomcol) == 1);
 	move(randomrow, randomcol);
-	//Se va colora in rosu
+	//color red
 	init_pair(3, COLOR_RED, COLOR_BLACK);
 	attron(COLOR_PAIR(3));
 	addch('*');
-	//Se revine la culoarea initiala
+	//back to initial colors
 	attron(COLOR_PAIR(1));
 
-	/* Predefiniri select */
+	/* Select defines */
 	nfds = 1;
 	FD_ZERO(&read_descriptors);
 	FD_SET(KEYBOARD, &read_descriptors);
 	timeout.tv_sec = 0;
 	timeout.tv_usec = 1000000;
 	k = 10000;
-
-	/* Se reflectă schimbările pe ecran */
 	refresh();
-	
 
-	/* Sarpele ramane pe loc pana la primirea unei directii */
+	/* Wait for a key to be pressed, in order to start snake's movement */
 	while(FOREVER){
 		c = getchar();
 		if(tolower(c) == 'w' || tolower(c) == 'a' || tolower(c) == 's' || tolower(c) == 'd' || tolower(c) == 'q')
 			break;
 	}
 	
-	/* Rămânem în while până când se primește tasta q */
+	/* Play until Q is pressed */
 	while (FOREVER) {
-		//Sarpele va pastra directia de miscare pana la primirea unei altei directii (W/A/S/D)
+		//maintain moving direction until another key is pressed
 		sel = select(nfds, &read_descriptors, NULL, NULL, &timeout);
 		switch(sel){
 		case SELECT_EVENT:
@@ -180,13 +168,13 @@
 
 		FD_SET(KEYBOARD, &read_descriptors);
 		timeout.tv_sec = 0;
-		//Viteza sarpelui creste de fiecare data cand mananca o 'hrana'; exista un prag maxim;
+		//speed increases as more food is eaten; there's a maximum speed allowed;
 		if(k > 900000)
 			timeout.tv_usec = 100000;
 		else
 			timeout.tv_usec = 1000000 - k;
 
-		//Dupa ce s-a iesit din pauza, se seteaza miscarea in directia indicata
+		//move in the set direction, after unpause
 		READY:
 		
 		if((tolower(c) == 'w' && dir != 's')|| (tolower(c) == 'a' && dir != 'd') || (tolower(c) == 's' && dir != 'w') || (tolower(c) == 'd' && dir != 'a') || tolower(c) == 'q' || tolower(c) == 'p')
@@ -195,10 +183,7 @@
 			break;
 		}
 		
-		/* Se determină noua poziție, în funcție de tasta apăsată
-		 * Nu putem depași nrows și ncols, sau linia 0/coloana 0.
-		 */
-		
+		/* Determine new position bassed on the key pressed */
 		switch (tolower(dir)) {
 		case 'a':
 			new_row = row;
@@ -225,8 +210,8 @@
 			break;
 
 		case 'p':
-		//optiune de pauza;
-		//dupa incheierea pauzei, se asteapta indicarea unei directii de mers;
+		//pause option;
+		//wait for a direction
 			pause_submenu(pause);
 			do{
 				c = getchar();
@@ -236,8 +221,7 @@
 			goto READY;
 		}
 
-		/* Se repozitioneaza sarpele */
-			//Stergerea ultimei parti a corpului sau adaugarea uneia in cazul in care capul trece peste hrana
+		/* Reposition snake */
 		if(new_row == randomrow && new_col == randomcol){
 			length++;
 			randomrow = 0;
@@ -248,13 +232,9 @@
 			move(snake[length - 1].row, snake[length - 1].col);
 			addch(' ');
 		}
-
 		snake_redraw(snake,length, new_row, new_col);
 
-		/* Se repozitioneaza hrana, daca aceasta a fost mancata
-		 * Hrana se genereaza astfel incat sa nu fie pozitionata peste obstacole sau peste sarpe
-		 * Generam pozitii random, pana la intalnirea uneia care satisface conditiile cerute
-		 */
+		/* Generate new food if the current one was eaten */
 		if(randomrow == 0 && randomcol == 0){
 			do{
 				grow_food(snake, box, &randomrow, &randomcol);
@@ -265,7 +245,7 @@
 			attron(COLOR_PAIR(1));
 		}
 			
-		/* Se verifica pozitia sarpelui; daca se loveste de chenarul jocului, de obstacole sau de sine, jocul se va incheia */
+		/* Verify snake position */
 		if(check_border_collision(box, new_row, new_col) == 1)
 			break;
 		if(check_collision(snake, length, new_row, new_col) == 1)
@@ -276,17 +256,17 @@
 		row = new_row;
 		col = new_col;
 		
-		/* Refresh meniu scor curent */
+		/* Refresh current score */
 		scor = length * M_PI * 10;
 		display_current_score_submenu(score_win, scor);
 
 		refresh();
 	}
 	clear();
-	/* Se afiseaza meniul final */
+	/* Final menu */
 	final_menu(win, length);
 
-	//Ramanem in meniul final pana la apasarea tastei 'q' pentru iesire sau 'h' pentru afisarea highscore 
+	//Loop until Q or H is pressed 
 	while(FOREVER){
 		c = getchar();
 		if(tolower(c) == 'q')

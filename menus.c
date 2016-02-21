@@ -1,34 +1,35 @@
 #include "menus.h"
 
-/* Functie pentru afisarea meniului initial
- * Acesta contine cele 5 optiuni care pot fi accesate
+/**
+ * Displays initial menu.
  */
 void initial_menu(WINDOW *win){
-	//Se sterge ecranul
+	//clear window
 	wclear(win);
-	//Se creeaza fereastra
+	//create window
 	wattron(win, A_BOLD);
 	box(win, 0, 0);
 	display_logo(win);
-	//Se seteaza culoarea alba pentru text
+	//set white for text
 	init_pair(5, COLOR_WHITE, COLOR_BLACK);
 	wattron(win, COLOR_PAIR(5));
-
 	mvwaddstr(win, 15, 2, "                       1) Incepeti jocul - cu obstacole");
 	mvwaddstr(win, 16, 2, "                       2) Incepeti jocul - fara obstacole");
 	mvwaddstr(win, 17, 2, "                       3) Instructiuni de utilizare");
 	mvwaddstr(win, 18, 2, "                       4) Highscores");
 	mvwaddstr(win, 19, 2, "                       5) Iesire din joc");
-	//Se revine la setul initial de culori
+	//intial colors
 	wattron(win, COLOR_PAIR(1));
 	wrefresh(win);
 }
-
+/** 
+ * Displays instructions.
+ */
 void instructions(WINDOW *win){
-	//Se sterge ecranul
+	//clear window
 	wclear(win);
-	char c;
-	//Se afiseaza meniul
+	//create window
+	wattron(win, A_BOLD);
 	box(win, 0, 0);
 	display_logo(win);
 	//set white for text
