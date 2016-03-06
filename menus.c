@@ -107,7 +107,7 @@ void pause_submenu(WINDOW *win){
 
 	mvwaddstr(win, 2, 1, "    Game is paused. ");
 	mvwaddstr(win, 3, 1, "       Press 'P'   ");
-	mvwaddstr(win, 4, 1, "     to continue.  ");
+	mvwaddstr(win, 4, 1, "      to continue.  ");
 	refresh();
 	wrefresh(win);
 }
@@ -128,7 +128,7 @@ void unpause_submenu(WINDOW *win){
 
 	mvwaddstr(win, 2, 1, "     Game unpaused.   ");
 	mvwaddstr(win, 3, 1, "     Press W/A/S/D    ");
-	mvwaddstr(win, 4, 1, "       to move.       ");
+	mvwaddstr(win, 4, 1, "         to move.     ");
 	refresh();
 	wrefresh(win);
 }
