@@ -3,3 +3,4 @@ A primitive version of the famous snake game, made during my first year of Compu
 TODO : 
 -> Translate into English.
 -> Organize better.
+-> Improve comments and documentation.
