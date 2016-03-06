@@ -13,11 +13,11 @@ void initial_menu(WINDOW *win){
 	//set white for text
 	init_pair(5, COLOR_WHITE, COLOR_BLACK);
 	wattron(win, COLOR_PAIR(5));
-	mvwaddstr(win, 15, 2, "                       1) Incepeti jocul - cu obstacole");
-	mvwaddstr(win, 16, 2, "                       2) Incepeti jocul - fara obstacole");
-	mvwaddstr(win, 17, 2, "                       3) Instructiuni de utilizare");
+	mvwaddstr(win, 15, 2, "                       1) Start game - with obstacles");
+	mvwaddstr(win, 16, 2, "                       2) Start game - without obstacles");
+	mvwaddstr(win, 17, 2, "                       3) Instructions");
 	mvwaddstr(win, 18, 2, "                       4) Highscores");
-	mvwaddstr(win, 19, 2, "                       5) Iesire din joc");
+	mvwaddstr(win, 19, 2, "                       5) Quit");
 	//intial colors
 	wattron(win, COLOR_PAIR(1));
 	wrefresh(win);
@@ -35,18 +35,19 @@ void instructions(WINDOW *win){
 	//set white for text
 	init_pair(5, COLOR_WHITE, COLOR_BLACK);
 	wattron(win, COLOR_PAIR(5));
-	mvwaddstr(win, 14, 2, "                         Instructiuni de utilizare");
-	mvwaddstr(win, 16, 2, "                              Taste de control: ");
-	mvwaddstr(win, 17, 2, "                              W - Sus");
-	mvwaddstr(win, 18, 2, "                              A - Stanga");
-	mvwaddstr(win, 19, 2, "                              S - Jos");
-	mvwaddstr(win, 20, 2, "                              D - Dreapta");
-	mvwaddstr(win, 21, 2, "                              P - Pauza");
-	mvwaddstr(win, 22, 2, "               Pentru iesire din acest meniu, apasati tasta 'Q'.");
+	mvwaddstr(win, 14, 2, "                            Instructions");
+	mvwaddstr(win, 16, 2, "                           Control keys:");
+	mvwaddstr(win, 17, 2, "                              W - Up");
+	mvwaddstr(win, 18, 2, "                              A - Left");
+	mvwaddstr(win, 19, 2, "                              S - Down");
+	mvwaddstr(win, 20, 2, "                              D - Right");
+	mvwaddstr(win, 21, 2, "                              P - Pause");
+	mvwaddstr(win, 22, 2, "                    Press 'Q' to leave this meu.");
 	//initial color
 	wattron(win, COLOR_PAIR(1));
 	wrefresh(win);
 	//wait until q is pressed
+	char c;
 	do{
 		c = getchar();
 	}while(c != 'q');
@@ -79,7 +80,7 @@ void display_highscores(WINDOW *win){
 		mvwprintw(win, 16 + i, 22, "%s", highscore[i].nume);
 		mvwprintw(win, 16 + i, 52, "%.2f", highscore[i].scor);
 	}
-	mvwaddstr(win, 22, 2, "               Pentru iesire din acest meniu, apasati tasta 'Q'.");
+	mvwaddstr(win, 22, 2, "                    Press 'Q' to leave this meu.");
 	//initial color
 	wattron(win, COLOR_PAIR(1));
 	wrefresh(win);
@@ -104,9 +105,9 @@ void pause_submenu(WINDOW *win){
 	init_pair(5, COLOR_WHITE, COLOR_BLACK);
 	wattron(win, COLOR_PAIR(5));
 
-	mvwaddstr(win, 2, 1, " Jocul este intrerupt. ");
-	mvwaddstr(win, 3, 1, "  Apasati 'P' pentru   ");
-	mvwaddstr(win, 4, 1, "      a continua.      ");
+	mvwaddstr(win, 2, 1, "    Game is paused. ");
+	mvwaddstr(win, 3, 1, "       Press 'P'   ");
+	mvwaddstr(win, 4, 1, "     to continue.  ");
 	refresh();
 	wrefresh(win);
 }
@@ -125,9 +126,9 @@ void unpause_submenu(WINDOW *win){
 	init_pair(5, COLOR_WHITE, COLOR_BLACK);
 	wattron(win, COLOR_PAIR(5));
 
-	mvwaddstr(win, 2, 1, "     Jocul continua.   ");
-	mvwaddstr(win, 3, 1, "     Apasati W/A/S/D   ");
-	mvwaddstr(win, 4, 1, "pentru a relua miscarea");
+	mvwaddstr(win, 2, 1, "     Game unpaused.   ");
+	mvwaddstr(win, 3, 1, "     Press W/A/S/D    ");
+	mvwaddstr(win, 4, 1, "       to move.       ");
 	refresh();
 	wrefresh(win);
 }
@@ -150,22 +151,22 @@ void final_menu(WINDOW *win, int length){
 	init_pair(5, COLOR_WHITE, COLOR_BLACK);
 	wattron(win, COLOR_PAIR(5));
 
-	mvwaddstr(win, 14, 2, "                              Jocul s-a incheiat!");
-	mvwaddstr(win, 15, 2, "                         	   Scor:");
+	mvwaddstr(win, 14, 2, "                              Game over!");
+	mvwaddstr(win, 15, 2, "                         	   Score:");
 	mvwprintw(win, 15, 42, "%.2f", scor);
 	//set yellow for player's name
 	init_pair(3, COLOR_YELLOW, COLOR_BLACK);
 	wattron(win, COLOR_PAIR(3));
-	mvwaddstr(win, 16, 2, "                         	   Introduceti numele aici");
+	mvwaddstr(win, 16, 2, "                         	   Insert name here");
 	wattroff(win, COLOR_PAIR(3));
 
-	mvwaddstr(win, 16, 2, "                          Nume:");
-	mvwaddstr(win, 18, 1, "                         Pentru iesire, apasati tasta 'Q'.");
-	mvwaddstr(win, 17, 1, "                         Pentru highscores, apasati tasta 'H'.");
+	mvwaddstr(win, 16, 2, "                          Name:");
+	mvwaddstr(win, 18, 1, "                         Press 'Q' to quit.");
+	mvwaddstr(win, 17, 1, "                         Press 'H' to view highscores.");
 
 	wrefresh(win);
 	echo();
-	mvwaddstr(win, 16, 2, "                          Nume:                         ");
+	mvwaddstr(win, 16, 2, "                          Name:                         ");
 	while(FOREVER){
 		wmove(win, 16, i);
 		scanf("%c", &c);
